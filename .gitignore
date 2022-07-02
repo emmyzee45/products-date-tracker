@@ -4,7 +4,7 @@
 client
 client/node_modules
 client/package-lock.json
-/.pnp
+client/.pnp
 .pnp.js
 
 # testing
