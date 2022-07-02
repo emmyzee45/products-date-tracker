@@ -6,8 +6,7 @@ client/node_modules
 client/package-lock.json
 client/.pnp
 .pnp.js
-src
-public
+
 
 # testing
 client/coverage
