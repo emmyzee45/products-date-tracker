@@ -7,11 +7,12 @@ const mongoose = require("mongoose");
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');
 const productRoute = require('./routes/product');
-const categoryRoute = require('./routes/categories');
 
 dotenv.config();
 
+app.set("view engine","ejs");
 app.use(express.json());
+app.use(express.urlencoded({extended: true}))
 app.use("/images", express.static(path.join(__dirname, "/images")))
 
 // process.env.MONGO_URL
@@ -34,6 +35,13 @@ mongoose.connect("mongodb://localhost/reactblog", {
 // app.post("/api/upload", upload.single("file"), (req, res) => {
 //     res.status(200).json("File has been uploaded...");
 // });
+app.get("/register", function(req, res){
+    res.render("register");
+})
+
+app.get("/login", function(req, res){
+    res.render("login")
+})
 
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);

@@ -1,14 +1,24 @@
 const router = require('express').Router();
 const Product = require('../models/Product');
 const bcrypt = require('bcrypt');
-const Post = require('../models/Post');
 const { 
     verifyToken,
     verifyTokenAndAuthorization,
     verifyTokenAndAdmin,
 } = require("./verifyToken");
 
-// Update
+// CREATE
+
+router.post("/", verifyTokenAndAuthorization, async (req, res) => {
+    const newProduct = new Product(req.body);
+
+    try {
+        const savedProduct = await newProduct.save();
+        res.status(200).json(savedProduct)
+    } catch(err) {
+        res.status(500).json(err);
+    }
+})
 
 // router.put('/:id', async (req, res) => {
     
