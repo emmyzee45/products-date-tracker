@@ -2,6 +2,10 @@
 
 # dependencies
 client
+package-lock.json
+.env
+views
+node_modules
 
 # testing
 client/coverage
