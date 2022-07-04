@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');
 const productRoute = require('./routes/product');
+const cartRoute = require('./routes/cart');
+const orderRoute = require('./routes/order');
 
 dotenv.config();
 
@@ -16,7 +18,7 @@ app.use(express.urlencoded({extended: true}))
 app.use("/images", express.static(path.join(__dirname, "/images")))
 
 // process.env.MONGO_URL
-mongoose.connect("mongodb://localhost/reactblog", {
+mongoose.connect("mongodb://localhost/shop", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
@@ -43,9 +45,18 @@ app.get("/login", function(req, res){
     res.render("login")
 })
 
+app.get("/update", function(req, res){
+    res.render("edit")
+})
+app.get("/product", function(req, res){
+    res.render("new")
+})
+
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
 app.use('/api/products', productRoute);
+app.use('/api/carts', cartRoute);
+app.use('/api/orders', orderRoute);
 
 app.listen("5000", () => {
     console.log("Backend is running.");

@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const Product = require('../models/Product');
-const bcrypt = require('bcrypt');
 const { 
     verifyToken,
     verifyTokenAndAuthorization,
@@ -20,103 +19,70 @@ router.post("/", verifyTokenAndAuthorization, async (req, res) => {
     }
 })
 
-// router.put('/:id', async (req, res) => {
+// Update
+
+router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     
-//     if(req.body.userId === req.params.id){
-//         if(req.body.password){
-//             const salt = await bcrypt.genSalt(10);
-//             req.body.password = await bcrypt.hash(req.body.password, salt);
-//         }
-//         try{
-//             const updatedUser = await User.findByIdAndUpdate(req.params.id, {
-//                 $set: req.body
-//             }, {new: true});
-//             res.status(200).json(updatedUser);
+    try{
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id, 
+            {
+            $set: req.body
+            }, 
+            {new: true}
+        );
+        res.status(200).json(updatedProduct);
 
-//         } catch(err){
+    } catch(err){
 
-//             res.status(500).json(err);
-//         } 
-//     } else{
-//         res.status(401).json("You can update only your account")
-//     }
+        res.status(500).json(err);
+    } 
     
-// });
+});
 
-// // Delete
-// router.delete('/:id', verifyTokenAndAuthorization, async (req, res) => {
-    
-//     if(req.body.userId === req.params.id){
-//         try{
-//             const user = await User.findById(req.params.id);
-//             try{
-//                 await Post.deleteMany({username: user.username});
-//                 await User.findByIdAndDelete(req.params.id);
-//                 res.status(200).json("User has been deleted");
-//             } catch(err){
-//                 console.log(err)
-//                 res.status(500).json(err);
-//             } 
-//         } catch(err){
-//             res.status(404).json("User not found!")
-//         }
-        
-//     } else{
-//         res.status(401).json("You can delete only your account")
-//     }
-    
-// });
+// Delete
+router.delete('/:id', verifyTokenAndAdmin, async (req, res) => {
 
-// // Get User
-//  router.get('/:id', verifyTokenAndAuthorization, async (req, res) => {
-//     try{
-//         const user = await User.findById(req.params.id);
-//         const {password,...others} = user._doc;
-//         res.status(200).json(others);
-//     } catch(err){
-//         res.status(500).json(err);
-//     }
-//  })
+        try{
+            await Product.findByIdAndDelete(req.params.id);
+            res.status(200).json("Product has been deleted");
+        } catch(err){
+            console.log(err)
+            res.status(500).json(err);
+        }
+});
 
-// // Get Users
-// router.get('/', verifyTokenAndAdmin, async (req, res) => {
-//     try{
-//         const users = query 
-//             ? await User.find().sort({ _id: -1 }).limit(5) 
-//             : await User.find();
-//         const {password,...others} = users._doc;
-//         res.status(200).json(others);
-//     } catch(err){
-//         res.status(500).json(err);
-//     }
-//  });
+// Get Product
+ router.get('/find/:id', async (req, res) => {
+    try{
+        const product = await Product.findById(req.params.id);
+        res.status(200).json(product);
+    } catch(err){
+        res.status(500).json(err);
+    }
+ })
 
-//  // Get User Stats
-
-//  router.get("/stats", verifyTokenAndAdmin, async (req, res) =>{
-//     const date = new Date();
-//     const lastYear = new Date(data.setFullYear(data.getFullYear() - 1));
-
-//     try {
-//         const data =  await User.aggregate([
-//             { $match: { createdAt: { $gte: lastYear }}},
-//             {
-//                 $project: {
-//                     month: { $month: "$createdAt" }
-//                 }
-//             },
-//             {
-//                 $group: {
-//                     _id: "$month",
-//                     total: { $sum: 1 }
-//                 }
-//             }
-//         ])
-//         res.status(200).json(data);
-//     } catch(err) {
-//         res.status(500).json(err);
-//     }
-//  })
-
-
+// Get All Products
+router.get('/', async (req, res) => {
+    const qNew = req.query.new;
+    const qCategory = req.query.category;
+    try{
+        let products;
+        if(qNew){
+            products = await Product.find().sort({ createdAt: -1 }).limit(5)
+        } else if(qCategory) {
+            products = await Product.find({
+                categories: {
+                    $in: [qCategory]
+                }
+            });
+        } else {
+            products = await Product.find();
+        }
+        res.status(200).json(products);
+    } catch(err){
+        res.status(500).json(err);
+    }
+ });
+ 
 module.exports = router;
