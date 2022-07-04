@@ -4,4 +4,7 @@
 client/node_modules
 client/package-lock.json
 
-api
+api/node_modules
+api/package-lock.json
+api/views
+api/.env
