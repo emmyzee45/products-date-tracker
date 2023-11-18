@@ -8,7 +8,7 @@ const {
 
 // CREATE
 
-router.post("/", verifyTokenAndAuthorization, async (req, res) => {
+router.post("/", async (req, res) => {
     const newProduct = new Product(req.body);
 
     try {

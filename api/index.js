@@ -1,5 +1,6 @@
 var express = require("express");
 var app = express();
+var cors = require("cors")
 const path   = require("path");
 const dotenv = require("dotenv");
 const multer = require("multer");
@@ -18,12 +19,20 @@ app.use(express.urlencoded({extended: true}))
 app.use("/images", express.static(path.join(__dirname, "/images")))
 
 // process.env.MONGO_URL
-mongoose.connect("mongodb://localhost/shop", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGO_URL)
 .then(console.log("connected to Mongodb"))
 .catch((err) => console.log(err));
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Credentials", true);
+      next();
+    });
+    app.use(
+      cors({
+        origin: "http://localhost:3000",
+      })
+      );
+  
 
 // const storage = multer.diskStorage({
 //     destination:(req, file, cb) => {

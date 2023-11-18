@@ -10,6 +10,8 @@ router.post('/register', async (req, res) => {
         
         const newUser = new User({
             username: req.body.username,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
             email: req.body.email,
             password: CryptoJS.AES.encrypt(
                 req.body.password,
@@ -19,15 +21,19 @@ router.post('/register', async (req, res) => {
         const user = await newUser.save();
         res.status(200).json(user);
     } catch(err){
-
+        console.log(err)
         res.status(500).json(err);
     }
 })
 
 // Login
 router.post('/login', async (req, res) => {
+    const {email, password } = req.body;
+
+    if(!email || !password) return res.status(400).json("All fields are required")
+    
     try{
-        const user = await User.findOne({username: req.body.username});
+        const user = await User.findOne({email: req.body.email});
         !user && res.status(400).json("Wrong credentials");
 
         const hashedPassword = CryptoJS.AES.decrypt(
@@ -35,8 +41,10 @@ router.post('/login', async (req, res) => {
             process.env.PASS_SEC
         )
         const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-        OriginalPassword !== req.body.password && 
-            res.status(400).json("Wrong credentials")
+        if(OriginalPassword !== req.body.password){
+            console.log(OriginalPassword, req.body.password)
+            return res.status(400).json("Wrong credentials")
+        }
         const accessToken = jwt.sign({
             id: user._id,
             isAdmin: user.isAdmin
@@ -45,10 +53,8 @@ router.post('/login', async (req, res) => {
         { expiresIn: "3d" }
         );
         const {password, ...others} = user._doc;
-        console.log(others)
         res.status(200).json({...others, accessToken});
     } catch(err) {
-        console.log(err)
         res.status(500).json(err);
     }
 })
