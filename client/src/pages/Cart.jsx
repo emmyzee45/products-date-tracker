@@ -1,14 +1,15 @@
 import { Add, Remove } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar/Navbar";
 import { mobile } from "../responsive";
 import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { userRequest } from "../requestMethods";
 import { useNavigate } from "react-router";
+import { emptyCart, removeCart } from "../redux/cartRedux";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -163,10 +164,20 @@ const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [stripeToken, setStripeToken] = useState(null);
   const history = useNavigate();
+  const dispatch = useDispatch();
 
   const onToken = (token) => {
     setStripeToken(token);
   };
+
+  const handleClear = () => {
+    dispatch(emptyCart())
+  }
+
+  const handleRemove = (id) => {
+    console.log(id)
+    // dispatch(removeCart(id))
+  }
 
   useEffect(() => {
     const makeRequest = async () => {
@@ -185,7 +196,7 @@ const Cart = () => {
   return (
     <Container>
       <Navbar />
-      <Announcement />
+      {/* <Announcement /> */}
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
@@ -194,7 +205,7 @@ const Cart = () => {
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist (0)</TopText>
           </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
+          <TopButton type="filled" onClick={handleClear}>CLEAR CART</TopButton>
         </Top>
         <Bottom>
           <Info>
@@ -219,7 +230,9 @@ const Cart = () => {
                   <ProductAmountContainer>
                     <Add />
                     <ProductAmount>{product.quantity}</ProductAmount>
-                    <Remove />
+                    <div onClick={handleRemove(product?._id)}>
+                      <Remove />
+                    </div>
                   </ProductAmountContainer>
                   <ProductPrice>
                     $ {product.price * product.quantity}

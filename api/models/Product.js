@@ -5,7 +5,10 @@ const ProductSchema = new mongoose.Schema({
 
                 type: String,
                 required: true,
-                unique: true
+        },
+        userId: {
+            type: String,
+            required: true
         },
         desc:{
                 type: String,
@@ -28,10 +31,18 @@ const ProductSchema = new mongoose.Schema({
             type: Number,
             required: true,
         },
-        endDate: {
+        expiredAt: {
             type: String,
         },
-        inStock: { type: Boolean, default: true}
+        isNoticed: {
+            type: Boolean,
+            default: false,
+        },
+        creatorEmail: {
+            type: String,
+            required: true
+        },
+
 }, { timestamps: true}
 )
 

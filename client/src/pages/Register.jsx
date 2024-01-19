@@ -3,6 +3,7 @@ import { mobile } from "../responsive";
 import { useState } from "react";
 import { publicRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Container = styled.div`
   width: 100vw;
@@ -67,10 +68,17 @@ const Register = () => {
   }
   const handlesubmit = async(e) => {
     e.preventDefault();
+    
+    if(values.password !== values.password_confirm) {
+      return toast.error("Password did not match!")
+    }
+
     try {
       await publicRequest.post('/auth/register', values);
-      navigate("/login")
+      navigate("/login");
+      toast.success("Account successfully created!")
     }catch(err) {
+      toast.error("something went wrong")
       console.log(err);
     }
   }

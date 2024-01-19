@@ -84,8 +84,9 @@
   }
 
   .navlogoimg {
-    width: 160px;
-    height: 69px;
+    font-size: 26px;
+    font-weight: 500;
+    /* font-style: oblique; */
   }
   .navcallimg {
     width: 32px;

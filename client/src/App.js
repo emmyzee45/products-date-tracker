@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import ProductList from "./pages/ProductList";
+import NewProduct from "./pages/newproduct/Newproduct";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
@@ -23,7 +24,10 @@ const App = () => {
         <Route exact path="/" element={<Home />}>
           {/* <Home /> */}
         </Route>
-        <Route path="/products/:category" element={<ProductList />} >
+        <Route path="/addproduct" element={<NewProduct />} >
+          {/* <ProductList /> */}
+        </Route>
+        <Route path="/products" element={<ProductList />} >
           {/* <ProductList /> */}
         </Route>
         <Route path="/product/:id" element={<Product />}>

@@ -15,13 +15,14 @@ router.post("/", async (req, res) => {
         const savedProduct = await newProduct.save();
         res.status(200).json(savedProduct)
     } catch(err) {
+        console.log(err)
         res.status(500).json(err);
     }
 })
 
 // Update
 
-router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
+router.put('/:id', async (req, res) => {
     
     try{
         const updatedProduct = await Product.findByIdAndUpdate(
@@ -41,7 +42,7 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
 });
 
 // Delete
-router.delete('/:id', verifyTokenAndAdmin, async (req, res) => {
+router.delete('/:id', async (req, res) => {
 
         try{
             await Product.findByIdAndDelete(req.params.id);

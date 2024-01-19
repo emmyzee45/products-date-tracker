@@ -1,0 +1,52 @@
+.updateProduct {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* flex: 4;
+    margin-left: 100px;
+    margin-bottom: 40px; */
+  }
+  
+  .updateProductForm {
+    margin-top: 10px;
+  }
+  
+  .updateProductItem {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .updateProductItem > label {
+    color: gray;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .updateProductItem > input {
+    pupdateing: 10px;
+  }
+  
+  .updateProductItem > select {
+    pupdateing: 10px;
+  }
+  
+  .updateProductButton {
+    margin-top: 10px;
+    pupdateing: 7px 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: darkblue;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  

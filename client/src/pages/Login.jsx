@@ -5,6 +5,7 @@ import { loginFailure, loginStart, loginSuccess } from "../redux/userRedux";
 import { publicRequest } from "../requestMethods";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Container = styled.div`
   width: 100vw;
@@ -84,7 +85,9 @@ const Login = () => {
       const res = await publicRequest.post("/auth/login", {email: username, password});
       dispatch(loginSuccess(res.data));
       navigate("/")
+      toast.success("Successfully Logged In")
     } catch (err) {
+      toast.error("Something went wrong")
       dispatch(loginFailure());
     }
   };
@@ -107,7 +110,7 @@ const Login = () => {
           </Button>
           {error && <Error>Something went wrong...</Error>}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
+          <Link href="/register">CREATE A NEW ACCOUNT</Link>
         </Form>
       </Wrapper>
     </Container>

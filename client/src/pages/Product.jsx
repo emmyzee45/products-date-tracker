@@ -2,15 +2,17 @@ import { Add, Remove } from "@mui/icons-material";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar/Navbar";
 import Newsletter from "../components/Newsletter";
 import { mobile } from "../responsive";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {toast} from "react-toastify";
 import { deleteProductFailure, deleteProductStart, deleteProductSuccess } from "../redux/productSlice";
+import Updateproduct from "../components/update/Updateproduct";
 
 const Container = styled.div``;
 
@@ -123,24 +125,26 @@ const Button = styled.button`
 const DeleteButton = styled.button`
   padding: 15px;
   border: 2px solid teal;
-  background-color: white;
+  background-color: red;
+  color: white;
   margin-top: 10px;
   cursor: pointer;
   font-weight: 500;
-
-  &:hover {
-    background-color: #f8f4f4;
-  }
 `;
 
 const Product = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
+  const [isExpired, setIsExpired] = useState(false);
+  const [update, setUpdate] = useState(false);
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const user = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -151,6 +155,15 @@ const Product = () => {
     };
     getProduct();
   }, [id]);
+
+
+  useEffect(() => {
+    const expirationDate = new Date(product.expiredAt);
+    const currentDate = new Date();
+
+    setIsExpired(currentDate > expirationDate);
+  }, [product]);
+
 
   const handleQuantity = (type) => {
     if (type === "dec") {
@@ -171,20 +184,24 @@ const Product = () => {
     try {
       await publicRequest.delete(`/products/${id}`);
       dispatch(deleteProductSuccess(id))
+      navigate("/products")
+      toast.success("Product successfully deleted")
     } catch(err) {
+      toast.error(err.response.data)
       dispatch(deleteProductFailure())
       console.log(err)
     } 
   }
 
   const handleUpdate = async(id) => {
-
+    setUpdate(true)
   }
 
   return (
+    <div>
     <Container>
       <Navbar />
-      <Announcement />
+      {/* <Announcement /> */}
       <Wrapper>
         <ImgContainer>
           <Image src={product?.img} />
@@ -217,13 +234,26 @@ const Product = () => {
             </AmountContainer>
             <Button onClick={handleClick}>ADD TO CART</Button>
           </AddContainer>
-          <DeleteButton onClick={() => handleDelete(product?._id)}>Delete</DeleteButton>
-          <DeleteButton onClick={() => handleUpdate(product?._id)}>Delete</DeleteButton>
+          {/* {user?._id === product?.userId && ( */}
+            <>
+              <Button onClick={() => handleDelete(product?._id)}>Delete</Button>
+              <Button onClick={() => handleUpdate(product?._id)}>Update</Button>
+            </>
+          {/* )} */}
+          <AddContainer>
+            {isExpired && (
+              <DeleteButton>Product Expired</DeleteButton>
+            )}
+          </AddContainer>
         </InfoContainer>
       </Wrapper>
       <Newsletter />
       <Footer />
-    </Container>
+      </Container>
+      {update && (
+        <Updateproduct product={product} setUpdate={setUpdate} />
+      )}
+      </div>
   );
 };
 

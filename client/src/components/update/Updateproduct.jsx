@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./newproduct.css";
+import "./updateproduct.css";
 import {
   getStorage,
   ref,
@@ -15,7 +15,7 @@ import { userRequest } from "../../requestMethods";
 import Navbar from "../../components/navbar/Navbar";
 import Footer from "../../components/Footer";
 
-export default function NewProduct() {
+export default function Updateproduct({ product, setUpdate }) {
   const [inputs, setInputs] = useState({
     title: "",
     desc: "",
@@ -27,8 +27,11 @@ export default function NewProduct() {
     cat: []
   });
   const [file, setFile] = useState(null);
+  const [title, setTitle] = useState(product?.title);
+  const [desc, setDesc] = useState(product?.desc);
+  const [price, setPrice] = useState(product?.price);
+  const [cat, setCat] = useState(product?.cat);
   const [isLoading, setIsLoading] = useState(false);
-  const [cat, setCat] = useState([]);
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.currentUser);
@@ -111,12 +114,10 @@ export default function NewProduct() {
   }
 
   return (
-    <div>
-    <Navbar />
-    <div className="newProduct">
-      <h1 className="addProductTitle">New Product</h1>
-      <form className="addProductForm" >
-        <div className="addProductItem">
+    <div className="updateProduct">
+      <h1 className="updateProductTitle">Update Product</h1>
+      <form className="updateProductForm" >
+        <div className="updateProductItem">
           <label>Image</label>
           <input
             type="file"
@@ -124,7 +125,7 @@ export default function NewProduct() {
             onChange={(e) => setFile(e.target.files[0])}
           />
         </div>
-        <div className="addProductItem">
+        <div className="updateProductItem">
           <label>Title</label>
           <input
             name="title"
@@ -134,7 +135,7 @@ export default function NewProduct() {
             onChange={handleChange}
           />
         </div>
-        <div className="addProductItem">
+        <div className="updateProductItem">
           <label>Description</label>
           <input
             name="desc"
@@ -144,7 +145,7 @@ export default function NewProduct() {
             onChange={handleChange}
           />
         </div>
-        <div className="addProductItem">
+        <div className="updateProductItem">
           <label>Expires Date</label>
           <input
             name="expiredAt"
@@ -154,7 +155,7 @@ export default function NewProduct() {
             onChange={handleChange}
           />
         </div>
-        <div className="addProductItem">
+        <div className="updateProductItem">
           <label>Price</label>
           <input
             name="price"
@@ -164,7 +165,7 @@ export default function NewProduct() {
             onChange={handleChange}
           />
         </div>
-        <div className="addProductItem">
+        <div className="updateProductItem">
           <label>Categories</label>
           <input 
             type="text" 
@@ -174,17 +175,15 @@ export default function NewProduct() {
         </div>
       
        {isLoading ? (
-        <button disabled={isLoading} onClick={handleClick} className="addProductButton">
+        <button disabled={isLoading} onClick={handleClick} className="updateProductButton">
           Processing...
         </button>
        ):(
-        <button onClick={handleClick} className="addProductButton">
-          Create
+        <button onClick={handleClick} className="updateProductButton">
+          Update
         </button>
        )} 
       </form>
-    </div>
-    <Footer />
     </div>
   );
 }
