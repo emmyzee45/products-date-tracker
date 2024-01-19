@@ -24,11 +24,14 @@ export default function NewProduct() {
     userId: "",
     expiredAt: "",
     img: "",
-    cat: []
+    color: [],
+    cat: [],
+    size: []
   });
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [color, setColor] = useState([]);
+  const [size, setSize] = useState([]);
   const [cat, setCat] = useState([]);
   const dispatch = useDispatch();
 
@@ -39,9 +42,15 @@ export default function NewProduct() {
       return { ...prev, [e.target.name]: e.target.value };
     });
   };
+
+  const handleSize = (e) => {
+    setSize(e.target.value.split(","));
+  };
+
   const handleColor = (e) => {
     setColor(e.target.value.split(","));
   };
+
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
   };
@@ -82,7 +91,7 @@ export default function NewProduct() {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const product = { ...inputs, img: downloadURL, categories: cat, creatorEmail: user?.email, userId: user?._id, color };
+          const product = { ...inputs, img: downloadURL, categories: cat, creatorEmail: user?.email, userId: user?._id, color, size };
            setFile(null)
           addProduct(product);
           setIsLoading(false);
@@ -104,7 +113,9 @@ export default function NewProduct() {
       creatorEmail: "",
       expiredAt: "",
       img: "",
-      cat: []
+      color: [],
+      cat: [],
+      size: []
       })
       toast.success("Product successfully add")
     } catch (err) {
@@ -174,6 +185,14 @@ export default function NewProduct() {
             type="text" 
             placeholder="red,blue" 
             onChange={handleColor} 
+          />
+        </div>
+        <div className="addProductItem">
+          <label>Size</label>
+          <input 
+            type="text" 
+            placeholder="xl,sm" 
+            onChange={handleSize} 
           />
         </div>
         <div className="addProductItem">

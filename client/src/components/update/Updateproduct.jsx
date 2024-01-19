@@ -19,6 +19,7 @@ export default function Updateproduct({ product, setUpdate }) {
   const [fileUrl, setFileUrl] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [title, setTitle] = useState(product?.title);
+  const [size, setSize] = useState(product?.size);
   const [color, setColor] = useState(product?.color);
   const [desc, setDesc] = useState(product?.desc);
   const [price, setPrice] = useState(product?.price);
@@ -91,9 +92,10 @@ export default function Updateproduct({ product, setUpdate }) {
     title,
     desc,
     price,
-    cat,
+    size,
     color,
     expiredAt,
+    categories: cat,
   }
 
   const handleSubmit = async(e) => {
@@ -188,6 +190,15 @@ export default function Updateproduct({ product, setUpdate }) {
             value={color}
             placeholder="red,blue" 
             onChange={(e) => setColor(e.target.value)} 
+          />
+        </div>
+        <div className="updateProductItem">
+          <label>Size</label>
+          <input 
+            type="text" 
+            value={size}
+            placeholder="xl,sm" 
+            onChange={(e) => setSize(e.target.value)} 
           />
         </div>
         <div className="updateProductItem">
