@@ -19,6 +19,7 @@ export default function Updateproduct({ product, setUpdate }) {
   const [fileUrl, setFileUrl] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [title, setTitle] = useState(product?.title);
+  const [color, setColor] = useState(product?.color);
   const [desc, setDesc] = useState(product?.desc);
   const [price, setPrice] = useState(product?.price);
   const [expiredAt, setExpiredAt] = useState(product?.expiredAt);
@@ -91,6 +92,7 @@ export default function Updateproduct({ product, setUpdate }) {
     desc,
     price,
     cat,
+    color,
     expiredAt,
   }
 
@@ -180,9 +182,19 @@ export default function Updateproduct({ product, setUpdate }) {
           />
         </div>
         <div className="updateProductItem">
+          <label>Colors</label>
+          <input 
+            type="text" 
+            value={color}
+            placeholder="red,blue" 
+            onChange={(e) => setColor(e.target.value)} 
+          />
+        </div>
+        <div className="updateProductItem">
           <label>Categories</label>
           <input 
             type="text" 
+            value={cat}
             placeholder="jeans,skirts" 
             onChange={(e) => setCat(e.target.value)} 
           />

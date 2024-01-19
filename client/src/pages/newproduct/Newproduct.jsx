@@ -28,6 +28,7 @@ export default function NewProduct() {
   });
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [color, setColor] = useState([]);
   const [cat, setCat] = useState([]);
   const dispatch = useDispatch();
 
@@ -37,6 +38,9 @@ export default function NewProduct() {
     setInputs((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
+  };
+  const handleColor = (e) => {
+    setColor(e.target.value.split(","));
   };
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
@@ -78,7 +82,7 @@ export default function NewProduct() {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const product = { ...inputs, img: downloadURL, categories: cat, creatorEmail: user?.email, userId: user?._id };
+          const product = { ...inputs, img: downloadURL, categories: cat, creatorEmail: user?.email, userId: user?._id, color };
            setFile(null)
           addProduct(product);
           setIsLoading(false);
@@ -162,6 +166,14 @@ export default function NewProduct() {
             value={inputs.price}
             placeholder="100"
             onChange={handleChange}
+          />
+        </div>
+        <div className="addProductItem">
+          <label>Colors</label>
+          <input 
+            type="text" 
+            placeholder="red,blue" 
+            onChange={handleColor} 
           />
         </div>
         <div className="addProductItem">
