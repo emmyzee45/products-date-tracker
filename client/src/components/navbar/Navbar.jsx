@@ -32,9 +32,9 @@ const Navbar = () => {
           <Link to="/" style={{background: "transparent", color: "white", textDecoration: "none"}}>
             <li className="navlistItem">Homepage</li>
           </Link>
-          <Link to="/products" style={{background: "transparent", color: "white", textDecoration: "none"}}>
+          {/* <Link to="/products" style={{background: "transparent", color: "white", textDecoration: "none"}}>
           <li className="navlistItem">Products</li>
-          </Link>
+          </Link> */}
           {isAuthenticated && (
             <Link to="/addproduct" style={{background: "transparent", color: "white", textDecoration: "none"}}>
           <li className="navlistItem">Add Product</li>
