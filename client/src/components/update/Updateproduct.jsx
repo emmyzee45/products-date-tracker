@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./updateproduct.css";
 import {
   getStorage,
@@ -9,44 +9,39 @@ import {
 import app from "../../firebase";
 // import { addProduct } from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
-import { addProductFailure, addProductStart, addProductSuccess } from "../../redux/productSlice";
+import { addProductFailure, addProductStart, addProductSuccess, updateProductFailure, updateProductStart, updateProductSuccess } from "../../redux/productSlice";
 import { toast } from "react-toastify";
 import { userRequest } from "../../requestMethods";
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/Footer";
 
 export default function Updateproduct({ product, setUpdate }) {
-  const [inputs, setInputs] = useState({
-    title: "",
-    desc: "",
-    price: "",
-    creatorEmail: "",
-    userId: "",
-    expiredAt: "",
-    img: "",
-    cat: []
-  });
+  
   const [file, setFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState(null);
+  const [imgUrl, setImgUrl] = useState(null);
   const [title, setTitle] = useState(product?.title);
   const [desc, setDesc] = useState(product?.desc);
   const [price, setPrice] = useState(product?.price);
+  const [expiredAt, setExpiredAt] = useState(product?.expiredAt);
   const [cat, setCat] = useState(product?.cat);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.currentUser);
 
-  const handleChange = (e) => {
-    setInputs((prev) => {
-      return { ...prev, [e.target.name]: e.target.value };
-    });
-  };
+//   const handleChange = (e) => {
+//     setInputs((prev) => {
+//       return { ...prev, [e.target.name]: e.target.value };
+//     });
+//   };
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
   };
 
-  const handleClick = (e) => {
-    e.preventDefault();
+  const handleClose = () => {
+    setUpdate(false);
+  }
+
+  const uploadFile = (file) => {
     setIsLoading(true)
     const fileName = new Date().getTime() + file.name;
     const storage = getStorage(app);
@@ -81,47 +76,66 @@ export default function Updateproduct({ product, setUpdate }) {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const product = { ...inputs, img: downloadURL, categories: cat, creatorEmail: user?.email, userId: user?._id };
-           setFile(null)
-          addProduct(product);
+        //   const product = { ...inputs, img: downloadURL, categories: cat, creatorEmail: user?.email, userId: user?._id };
+           setImgUrl(downloadURL)
+        //   addProduct(product);
           setIsLoading(false);
         });
       }
     );
   };
 
-  const addProduct = async(product) => {
-    dispatch(addProductStart());
+  const data = {
+    img: imgUrl ? imgUrl : product.img,
+    title,
+    desc,
+    price,
+    cat,
+    expiredAt,
+  }
+
+  const handleSubmit = async(e) => {
+    e.preventDefault()
+    dispatch(updateProductStart());
     try {
-      const res = await userRequest.post(`/products`, product);
-      dispatch(addProductSuccess(res.data));
-      setInputs({
-        title: "",
-      desc: "",
-      inStock: "",
-      price: "",
-      creatorEmail: "",
-      expiredAt: "",
-      img: "",
-      cat: []
-      })
+      const res = await userRequest.put(`/products/${product?._id}`, data);
+      dispatch(updateProductSuccess(res.data));
       toast.success("Product successfully add")
+      setUpdate(false);
     } catch (err) {
       console.log(err)
         toast.error("Something went wrong")
-      dispatch(addProductFailure());
+      dispatch(updateProductFailure());
     }
   }
+
+  useEffect(() => {
+    file && uploadFile(file);
+  }, [file]);
+
+  useEffect(() => {
+    if(file) {
+        setFileUrl(URL.createObjectURL(file))
+    }
+  }, [file])
 
   return (
     <div className="updateProduct">
       <h1 className="updateProductTitle">Update Product</h1>
-      <form className="updateProductForm" >
+      <div className="close-update" onClick={handleClose}>X</div>
+      <form className="updateProductForm" onSubmit={handleSubmit}>
         <div className="updateProductItem">
-          <label>Image</label>
+          <label htmlFor="file">
+            {fileUrl ? (
+                <img src={fileUrl} className="imgUrl" />
+            ):(
+                <img src={product?.img} className="imgUrl" />
+            )}
+          </label>
           <input
             type="file"
             id="file"
+            hidden
             onChange={(e) => setFile(e.target.files[0])}
           />
         </div>
@@ -130,9 +144,9 @@ export default function Updateproduct({ product, setUpdate }) {
           <input
             name="title"
             type="text"
-            value={inputs.title}
+            value={title}
             placeholder="Apple Airpods"
-            onChange={handleChange}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
         <div className="updateProductItem">
@@ -140,9 +154,9 @@ export default function Updateproduct({ product, setUpdate }) {
           <input
             name="desc"
             type="text"
-            value={inputs.desc}
+            value={desc}
             placeholder="description..."
-            onChange={handleChange}
+            onChange={(e) => setDesc(e.target.value)}
           />
         </div>
         <div className="updateProductItem">
@@ -150,9 +164,9 @@ export default function Updateproduct({ product, setUpdate }) {
           <input
             name="expiredAt"
             type="date"
-            value={inputs.expiredAt}
+            value={expiredAt}
             placeholder="expired date..."
-            onChange={handleChange}
+            onChange={(e) => setExpiredAt(e.target.value)}
           />
         </div>
         <div className="updateProductItem">
@@ -160,9 +174,9 @@ export default function Updateproduct({ product, setUpdate }) {
           <input
             name="price"
             type="number"
-            value={inputs.price}
+            value={price}
             placeholder="100"
-            onChange={handleChange}
+            onChange={(e) => setPrice(e.target.value)}
           />
         </div>
         <div className="updateProductItem">
@@ -170,16 +184,16 @@ export default function Updateproduct({ product, setUpdate }) {
           <input 
             type="text" 
             placeholder="jeans,skirts" 
-            onChange={handleCat} 
+            onChange={(e) => setCat(e.target.value)} 
           />
         </div>
       
        {isLoading ? (
-        <button disabled={isLoading} onClick={handleClick} className="updateProductButton">
-          Processing...
+        <button disabled={isLoading} className="updateProductButton">
+          Image uploading...
         </button>
        ):(
-        <button onClick={handleClick} className="updateProductButton">
+        <button className="updateProductButton">
           Update
         </button>
        )} 

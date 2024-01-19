@@ -6,14 +6,29 @@
     align-items: center;
     justify-content: center;
     background-color: white;
+    padding-bottom: 120px;
     position: absolute;
     top: 0;
     left: 0;
-    /* flex: 4;
-    margin-left: 100px;
-    margin-bottom: 40px; */
   }
   
+  .close-update {
+    position: absolute;
+    top: 120px;
+    right: 100px;
+    background-color: rgba(0, 0, 0, 0.863);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: large;
+    cursor: pointer;
+  }
   .updateProductForm {
     margin-top: 10px;
   }
@@ -31,17 +46,24 @@
     margin-bottom: 10px;
   }
   
+  .imgUrl {
+    width: 300px;
+    height: 300px;
+    margin-top: 120px;
+    cursor: pointer;
+  }
+
   .updateProductItem > input {
-    pupdateing: 10px;
+    padding: 10px;
   }
   
   .updateProductItem > select {
-    pupdateing: 10px;
+    padding: 10px;
   }
   
   .updateProductButton {
     margin-top: 10px;
-    pupdateing: 7px 10px;
+    padding: 7px 10px;
     border: none;
     border-radius: 10px;
     background-color: darkblue;
